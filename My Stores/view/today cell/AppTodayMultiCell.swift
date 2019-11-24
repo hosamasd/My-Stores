@@ -12,24 +12,24 @@ import UIKit
 class AppTodayMultiCell: BaseCell {
     
     
-//    var appFeeds:FeedResult? {
-//        didSet{
-//            guard let app = appFeeds else { return }
-//
-//            guard  let url = URL(string: app.artworkUrl100) else {return}
-//
-//            self.appImage.sd_setImage(with: url)
-//            self.appNameLabel.text = app.name
-//            self.appCompanyLabel.text = app.artistName
-//        }
-//    }
+    var appFeeds:FeedResult? {
+        didSet{
+            guard let app = appFeeds else { return }
+
+            guard  let url = URL(string: app.artworkUrl100) else {return}
+
+            self.appImage.sd_setImage(with: url)
+            self.appNameLabel.text = app.name
+            self.appCompanyLabel.text = app.artistName
+        }
+    }
     
     let appImage:UIImageView = {
         let im = UIImageView()
         im.layer.cornerRadius = 12
         im.clipsToBounds = true
         im.constrainWidth(constant: 64)
-        im.constrainHeight(constant: 64)
+        im.constrainHeight(constant: 54)
         im.backgroundColor = .red
         return im
     }()
@@ -52,13 +52,7 @@ class AppTodayMultiCell: BaseCell {
     override func setupViews() {
         backgroundColor = .white
          let stackLabel = stack(appNameLabel,appCompanyLabel, spacing: 4)
-//        let stackLabel = getStacks(views: appNameLabel,appCompanyLabel, axis: .vertical, space: 4)
         hstack(appImage,stackLabel,getButton, spacing: 16, alignment: .center)
-        
-//        let stacks = getStacks(views: appImage,stackLabel,getButton, axis: .horizontal, space: 16)
-//        stacks.alignment = .center
-//        addSubview(stacks)
-//        stacks.fillSuperview()
         
     }
 }

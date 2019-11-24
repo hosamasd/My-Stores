@@ -13,6 +13,10 @@ class AppTodayHorizentalVC: BaseVC {
     fileprivate let cellId = "cellId"
     fileprivate let lineSpacing:CGFloat = 10
     fileprivate let topBottomSpacing:CGFloat = 12
+     var appGroups:AppGroupModel?
+    var didSelectHandler:((FeedResult)->())?
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
        
@@ -24,9 +28,18 @@ class AppTodayHorizentalVC: BaseVC {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AppTodayMultiCell
+        let appFeed = appGroups?.feed.results[indexPath.item]
+        
+        cell.appFeeds = appFeed
         
 //        cell.backgroundColor = .red
         return cell
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let index = self.appGroups?.feed.results[indexPath.item] {
+            didSelectHandler?(index)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
