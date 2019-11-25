@@ -12,7 +12,10 @@ class AppDeatailsVC: BaseVC {
     
     fileprivate let cellId = "cellId"
      fileprivate let previewCellId = "previewCellId"
-    let dumy = "This rectangle defines the size and position of the view in its superview’s coordinate system. Use this rectangle during layout operations to set the size and position the view. Setting this property changes the point specified by the center property and changes the size in the bounds rectangle accordingly. The coordinates of the frame rectangle are always specified in points"
+    fileprivate let ratingCellId = "ratingCellId"
+    
+    var appResult:Result?
+    var ratings:RatingModel?
     
     //dependency
     fileprivate let appId:String
@@ -28,41 +31,84 @@ class AppDeatailsVC: BaseVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        fetchData()
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 2
+        return 3
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.item == 0 {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AppTodayDetailCell
-        cell.realeaseLabel.text = dumy
+        cell.apps = appResult
         return cell
+        }else if indexPath.item == 1 {
+            let cellPre = collectionView.dequeueReusableCell(withReuseIdentifier: previewCellId, for: indexPath) as! AppPreiviewDetailCell
+            cellPre.appPreiviewHorizental.appsArray = self.appResult
+            cellPre.appPreiviewHorizental.collectionView.reloadData()
+            return cellPre
         }else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: previewCellId, for: indexPath) as! AppPreiviewDetailCell
+            let cellRate = collectionView.dequeueReusableCell(withReuseIdentifier: ratingCellId, for: indexPath) as! AppDetailRatingCell
+            cellRate.ratingHorizentalCollectionView.rateing = self.ratings?.feed.entry[indexPath.item]
+            cellRate.ratingHorizentalCollectionView.collectionView.reloadData()
+            return cellRate
+        }
+    }
+    
+    
+    
+    //MARK: -user methods
+    
+    func fetchData()  {
+        let url = "https://itunes.apple.com/lookup?id=\(appId)"
+        Services.shared.fetchGenericJSONData(urlString: url) { (res:AppResultModel? , err) in
+            if let err = err {
+                print("error        ",err.localizedDescription)
+            }
+            self.appResult =  res?.results.first
             
-            return cell
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }
+        
+        let reviewsUrl = "https://itunes.apple.com/rss/customerreviews/page=1/id=\(appId)/sortby=mostrecent/json?l=en&cc=us"
+        Services.shared.fetchGenericJSONData(urlString: reviewsUrl) { (rate:RatingModel?, err) in
+            self.ratings = rate
+            
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let estimatedCellSize = AppTodayDetailCell(frame: .init(x: 0, y: 0, width: view.frame.width, height: 10000))
-        estimatedCellSize.realeaseLabel.text = dumy
-//        estimatedCellSize.item = items[indexPath.item]
-        estimatedCellSize.layoutIfNeeded()
         
-        let estimatedHeight = estimatedCellSize.systemLayoutSizeFitting(.init(width: view.frame.width, height: 1000))
+        var height: CGFloat = 280
         
+        if indexPath.item == 0 {
+            // calculate the necessary size for our cell somehow
+            let dummyCell = AppTodayDetailCell(frame: .init(x: 0, y: 0, width: view.frame.width, height: 1000))
+            dummyCell.apps = appResult
+            dummyCell.layoutIfNeeded()
+            
+            let estimatedSize = dummyCell.systemLayoutSizeFitting(.init(width: view.frame.width, height: 1000))
+            height = estimatedSize.height
+        } else if indexPath.item == 1 {
+            height = 500
+        } else {
+            height = 280
+        }
         
-        return .init(width: view.frame.width, height: estimatedHeight.height)
+        return .init(width: view.frame.width, height: height)
     }
     
     override func setupCollection() {
         collectionView.backgroundColor = .white
         collectionView.register(AppTodayDetailCell.self, forCellWithReuseIdentifier: cellId)
         collectionView.register(AppPreiviewDetailCell.self, forCellWithReuseIdentifier: previewCellId)
+        collectionView.register(AppDetailRatingCell.self, forCellWithReuseIdentifier: ratingCellId)
     }
    
     

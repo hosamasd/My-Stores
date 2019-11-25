@@ -10,6 +10,15 @@ import UIKit
 
 class AppTodayDetailCell: BaseCell {
     
+    var apps:Result?  {
+        didSet{
+            appImage.sd_setImage(with: URL(string: apps?.artworkUrl100 ?? ""))
+            appNameLabel.text = apps?.trackName
+            priceGetButton.setTitle(apps?.formattedPrice, for: .normal)
+            realeaseLabel.text = apps?.releaseNotes
+        }
+    }
+    
     let appImage:UIImageView = {
         let im = UIImageView()
         im.layer.cornerRadius = 12
@@ -20,7 +29,7 @@ class AppTodayDetailCell: BaseCell {
         return im
     }()
     
-    let appNameLabel=UILabel(text: "App Name \n ompany Name \n vfvv", font: .systemFont(ofSize: 16),numberOfLines: 3)
+    let appNameLabel=UILabel(text: "App Name \n ompany Name \n vfvv", font: .systemFont(ofSize: 24),numberOfLines: 3)
     let whatNewLabel=UILabel(text: "What's news", font: .systemFont(ofSize: 18))
     let realeaseLabel = UILabel(text: "release ", font: .systemFont(ofSize: 16), textColor: .lightGray,numberOfLines: 0)
     

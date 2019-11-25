@@ -1,5 +1,5 @@
 //
-//  AppDetailPreiviewHorizentalVC.swift
+//  AppTodayHeaderHorizentalVC.swift
 //  My Stores
 //
 //  Created by hosam on 11/24/19.
@@ -8,32 +8,27 @@
 
 import UIKit
 
-class AppDetailPreiviewHorizentalVC: BaseVC {
+class AppTodayHeaderHorizentalVC: BaseVC {
     
-   
-    fileprivate let cellId = "cellId"
-     var appsArray:Result?
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    
-    }
+     var socialAppArray = [SocialAModel]()
+     fileprivate let cellId = "cellId"
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return appsArray?.screenshotUrls?.count ?? 0
+        return socialAppArray.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AppDetailPreiviewScreenshotCell
-        let screen = appsArray?.screenshotUrls?[indexPath.item]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AppTodayHeaderCell
+        let social = socialAppArray[indexPath.item]
         
-        cell.appScreenShotImage.sd_setImage(with: URL(string: screen ?? ""))
+        cell.titleLabel.text = social.name
+        cell.subTitleLabel.text = social.tagline
+        cell.appImageView.sd_setImage(with: URL(string: social.imageUrl ?? ""))
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return .init(width: view.frame.width - 64, height: view.frame.height)
+        return .init(width: view.frame.width - 48, height: view.frame.height)
     }
     
     override func setupCollection() {
@@ -41,9 +36,6 @@ class AppDetailPreiviewHorizentalVC: BaseVC {
             layout.scrollDirection = .horizontal
         }
         collectionView.backgroundColor = .white
-        collectionView.register(AppDetailPreiviewScreenshotCell.self, forCellWithReuseIdentifier: cellId)
+         collectionView.register(AppTodayHeaderCell.self, forCellWithReuseIdentifier: cellId)
     }
-    
-   
-    
 }
