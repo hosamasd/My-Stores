@@ -11,7 +11,7 @@ import UIKit
 class AppDetailRatingHorizentalVC: BaseVC {
     
     fileprivate let cellId = "cellId"
-     var rateing:Entry?
+     var rateing = [Entry]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,19 +19,21 @@ class AppDetailRatingHorizentalVC: BaseVC {
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return rateing.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! RatingAppCell
+        let rate = rateing[indexPath.item]
         
-         cell.rates = rateing
+         cell.rates = rate
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+         let rate = rateing[indexPath.item]
         let estimatedCellSize = RatingAppCell(frame: .init(x: 0, y: 0, width: view.frame.width, height: 10000))
-        estimatedCellSize.bodyLabel.text = rateing?.content.label
+        estimatedCellSize.bodyLabel.text = rate.content.label
         estimatedCellSize.layoutIfNeeded()
         
         let estimatedHeight = estimatedCellSize.systemLayoutSizeFitting(.init(width: view.frame.width, height: 1000))

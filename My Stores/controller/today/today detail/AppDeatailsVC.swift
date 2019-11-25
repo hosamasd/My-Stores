@@ -50,7 +50,7 @@ class AppDeatailsVC: BaseVC {
             return cellPre
         }else {
             let cellRate = collectionView.dequeueReusableCell(withReuseIdentifier: ratingCellId, for: indexPath) as! AppDetailRatingCell
-            cellRate.ratingHorizentalCollectionView.rateing = self.ratings?.feed.entry[indexPath.item]
+            cellRate.ratingHorizentalCollectionView.rateing = self.ratings?.feed.entry ?? []
             cellRate.ratingHorizentalCollectionView.collectionView.reloadData()
             return cellRate
         }
