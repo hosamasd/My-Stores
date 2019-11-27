@@ -38,6 +38,11 @@ class AppsListVC: BaseVC {
         fetchData()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.superview?.setNeedsLayout()
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return  items.count
     }
@@ -48,6 +53,7 @@ class AppsListVC: BaseVC {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIId, for: indexPath) as! AppBaseItemCell
         cell.items = items[indexPath.item]
         
+        (cell as? MultAappCell)?.multiApp.collectionView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectedIndex)))
         return cell
     }
     
@@ -58,6 +64,14 @@ class AppsListVC: BaseVC {
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = items[indexPath.item]
+        if item.cellType == .multi {
+            let full = MultiAppListVC(mode: .fullScreen)
+            full.apps = items[indexPath.item].apps
+            present(BackEnabledNavigationVC(rootViewController: full), animated: true, completion: nil)
+            return
+        }
+        
+        
         
         let appFullScreen = AppFullScreenVC(item: item)
         let fullScreenView = appFullScreen.view!
@@ -193,5 +207,24 @@ class AppsListVC: BaseVC {
         
          collectionView.register(AppCell.self, forCellWithReuseIdentifier: AppItem.CellType.single.rawValue)
         collectionView.register(MultAappCell.self, forCellWithReuseIdentifier: AppItem.CellType.multi.rawValue)
+    }
+    
+    @objc func handleSelectedIndex(gesture:UITapGestureRecognizer)  {
+        let collections = gesture.view
+        
+        var superviews = collections?.superview
+        
+        while superviews != nil {
+            if let cell = superviews as? MultAappCell  {
+                guard let index = self.collectionView.indexPath(for: cell) else {return}
+                let apps = self.items[index.item].apps
+                let full = MultiAppListVC(mode: .fullScreen)
+                full.apps = apps
+                present(BackEnabledNavigationVC(rootViewController: full), animated: true, completion: nil)
+            }
+            superviews = superviews?.superview
+        }
+        
+        
     }
 }

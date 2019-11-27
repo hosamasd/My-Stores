@@ -22,7 +22,7 @@ class MultAappCell: AppBaseItemCell {
     let categoryLabel = UILabel(text: "", font: .boldSystemFont(ofSize: 20))
     let titleLabel = UILabel(text: "", font: .boldSystemFont(ofSize: 28),numberOfLines: 2)
     
-    var multiApp = MultiAppListVC()
+    var multiApp = MultiAppListVC(mode: .small)
     
     override func setupViews() {
         backgroundColor = .white

@@ -27,6 +27,7 @@ class AppFullScreenVC: UITableViewController {
 //    lazy var closeButton:UIButton = {
 //        let bt = UIButton()
 //        bt.setImage(#imageLiteral(resourceName: "close_button").withRenderingMode(.alwaysOriginal), for: .normal)
+//        bt.tintColor = UIColor.darkGray
 //        bt.addTarget(self, action: #selector(handleDismis), for: .touchUpInside)
 //        bt.constrainWidth(constant: 80)
 //        bt.constrainHeight(constant: 40)
