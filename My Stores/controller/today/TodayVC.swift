@@ -44,7 +44,6 @@ class TodayVC: BaseVC {
         cell.appTodayHorizental.didSelectHandler = { [weak self] res in
             let newVC = AppDeatailsVC(appId: res.id)
             newVC.navigationItem.title = res.name
-            print(res.id)
             self?.navigationController?.pushViewController(newVC, animated: true)
         }
         return cell

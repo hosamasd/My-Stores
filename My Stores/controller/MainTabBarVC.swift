@@ -27,8 +27,8 @@ class MainTabBarVC: UITabBarController {
         tabBar.tintColor = .black
         
         viewControllers = [
-           today ,
-            apps,
+          apps  ,
+          today  ,
             search,
             music
         ]

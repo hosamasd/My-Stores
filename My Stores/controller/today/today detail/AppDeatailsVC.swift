@@ -32,6 +32,7 @@ class AppDeatailsVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchData()
+//        navigationItem.title = appResult?.
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

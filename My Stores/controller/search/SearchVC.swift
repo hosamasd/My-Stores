@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SearchVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class SearchVC: BaseVC {
     
     var appResultsArray = [Result]()
     var userResults = [Result]()
@@ -40,11 +40,17 @@ class SearchVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         return cell
     }
     
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    let appId = String(self.appResultsArray[indexPath.item].trackId)
+        let newVC = AppDeatailsVC(appId: appId)
+        self.navigationController?.pushViewController(newVC, animated: true)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return .init(width: view.frame.width, height: 300)
     }
     
-    func setupCollection()  {
+    override func setupCollection()  {
         collectionView.addSubview(defaultTextLable)
         defaultTextLable.fillSuperview(padding: .init(top: 100, left: 50, bottom: 0, right: 50))
         collectionView.backgroundColor = .white
@@ -65,7 +71,7 @@ class SearchVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         }
     }
     
-    func setupNavigation()  {
+    override func setupNavigation()  {
         self.definesPresentationContext = true
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = searchController
@@ -78,13 +84,7 @@ class SearchVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         searchController.searchBar.placeholder = "Search "
     
     }
-    init() {
-        super.init(collectionViewLayout: UICollectionViewFlowLayout())
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+  
     
 }
 
