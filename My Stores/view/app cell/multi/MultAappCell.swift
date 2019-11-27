@@ -15,7 +15,7 @@ class MultAappCell: AppBaseItemCell {
             guard let  item = items else { return  }
             self.categoryLabel.text = item.category
             self.titleLabel.text = item.title
-            backgroundColor = item.backgroundColor
+            multiApp.apps = item.apps
         }
     }
     

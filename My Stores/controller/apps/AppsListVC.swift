@@ -21,17 +21,21 @@ class AppsListVC: BaseVC {
         aiv.hidesWhenStopped = true
         return aiv
     }()
-    let items  = [
-       
-        AppItem.init(category: "the daily list", title: "tUtilizing your Time \n rtdfgfd ", image: #imageLiteral(resourceName: "holiday"), description: "", backgroundColor: .white,cellType: .multi),
-        .init(category: "Holiday", title: "travel on a badget", image: #imageLiteral(resourceName: "holiday"), description: "to intelligently organize your life the right way.", backgroundColor: #colorLiteral(red: 0.9925484061, green: 0.9600889087, blue: 0.7310721278, alpha: 1),cellType:.single),
-         .init(category: "LIFE HACK", title: "Utilizing your Time", image: #imageLiteral(resourceName: "garden"), description: "All the tools and apps you need to intelligently organize your life the right way.", backgroundColor: .white,cellType:.single)
-        
-    ]
+   
+//    var items  = [
+//         .init(category: "LIFE HACK", title: "Utilizing your Time", image: #imageLiteral(resourceName: "garden"), description: "All the tools and apps you need to intelligently organize your life the right way.", backgroundColor: .white,cellType:.single),
+//          AppItem.init(category: "The daily list", title: "Test-Drive these carPlay Apps ", image: #imageLiteral(resourceName: "holiday"), description: "", backgroundColor: .white,cellType: .multi),
+//       AppItem.init(category: "Holiday", title: "travel on a badget", image: #imageLiteral(resourceName: "holiday"), description: "to intelligently organize your life the right way.", backgroundColor: #colorLiteral(red: 0.9925484061, green: 0.9600889087, blue: 0.7310721278, alpha: 1),cellType:.single),
+//
+//      ]
+    
+     var items  = [AppItem]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollection()
+//        fetchApps()
+        fetchData()
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -43,6 +47,7 @@ class AppsListVC: BaseVC {
         let cellIId = items[indexPath.item].cellType.rawValue
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIId, for: indexPath) as! AppBaseItemCell
         cell.items = items[indexPath.item]
+        
         return cell
     }
     
@@ -131,8 +136,58 @@ class AppsListVC: BaseVC {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return .init(top: 32, left: 0, bottom: 32, right: 0)
     }
-   
+    //MARK: -user methods
+    
+    func fetchData()  {
+        
+        var group1: AppGroupModel?
+        var group2: AppGroupModel?
+        //to sync data that can be fetched
+        let dispatchGroup = DispatchGroup()
+        
+        dispatchGroup.enter()
+        Services.shared.fetchFreeApps { (apps, err) in
+           
+            group2 = apps
+             dispatchGroup.leave()
+        }
+        
+       
+        
+       
+        
+        dispatchGroup.enter()
+        Services.shared.fetchTopGrossing { (apps, err) in
+//            dispatchGroup.leave()
+            group1 = apps
+             dispatchGroup.leave()
+        }
+        
+//        dispatchGroup.enter()
+//        Services.shared.fetchSocialApps { (social, err) in
+//            dispatchGroup.leave()
+//            self.groupsSocial = social ?? []
+//        }
+        
+        dispatchGroup.notify(queue: .main) {
+            print(456)
+            self.activityIndicatorView.stopAnimating()
+            
+
+            self.items = [  .init(category: "LIFE HACK", title: "Utilizing your Time", image: #imageLiteral(resourceName: "garden"), description: "All the tools and apps you need to intelligently organize your life the right way.", backgroundColor: .white, apps: [],cellType:.single),
+                            AppItem.init(category: "The daily list", title: group1?.feed.title ?? "", image: #imageLiteral(resourceName: "holiday"), description: "", backgroundColor: .white, apps: group1?.feed.results ?? [],cellType: .multi),
+                             AppItem.init(category: "The daily list", title: group2?.feed.title ?? "", image: #imageLiteral(resourceName: "holiday"), description: "", backgroundColor: .white, apps: group2?.feed.results ?? [] ,cellType: .multi),
+                            AppItem.init(category: "Holiday", title: "travel on a badget", image: #imageLiteral(resourceName: "holiday"), description: "to intelligently organize your life the right way.", backgroundColor: #colorLiteral(red: 0.9925484061, green: 0.9600889087, blue: 0.7310721278, alpha: 1), apps: [],cellType:.single)
+                ]
+            
+            self.collectionView.reloadData()
+        }
+    }
+    
     override func setupCollection()  {
+        view.addSubview(activityIndicatorView)
+        activityIndicatorView.centerInSuperview()
+        
         navigationController?.isNavigationBarHidden = true
         collectionView.backgroundColor = #colorLiteral(red: 0.9555082917, green: 0.9493837953, blue: 0.9556146264, alpha: 1)
         
